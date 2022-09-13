@@ -13,6 +13,7 @@ export declare const scaleRow3: (numbers: number[], rowIndex: number, scale: num
 export declare const cloneArray: <T>(array: ArrayLike<T>) => T[];
 export declare const centerModulo: (x: number, base: number) => number;
 export declare const round: (x: number, base: number) => number;
+export declare const matrixToString: (m: ArrayLike<number>) => string;
 export declare const toString: (value: unknown) => string;
 export declare const utils: {
     swapMatrixOrder: (numbers: ArrayLike<number>) => number[];

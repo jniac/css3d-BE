@@ -21,11 +21,6 @@ import CameraHandler from './CameraHandler';
 export default class CubeHandler extends Mesh {
     camera: CameraHandler;
     /**
-     * Override constructor.
-     * @warn do not fill.
-     */
-    protected constructor();
-    /**
      * Called on the node is being initialized.
      * This function is called immediatly after the constructor has been called.
      */
@@ -37,7 +32,7 @@ export default class CubeHandler extends Mesh {
     onUpdate(): void;
     time: number;
     sphereUpdate(): void;
-    animation(): void;
+    animation(): "rotating" | "suspended" | "fixed" | "identity" | "x:180" | "y:180" | "z:180" | "y:90";
     projectPlane(id: string, { x, y, z, rx, ry, rz, }?: {
         x?: number;
         y?: number;

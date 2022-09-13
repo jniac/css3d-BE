@@ -38,6 +38,7 @@ var __read = (this && this.__read) || function (o, n) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@babylonjs/core");
+var CameraHandler_1 = require("./CameraHandler");
 var decorators_1 = require("./decorators");
 var ui_1 = require("./ui");
 var utils_1 = require("./utils");
@@ -61,13 +62,8 @@ var utils_1 = require("./utils");
  */
 var CubeHandler = /** @class */ (function (_super) {
     __extends(CubeHandler, _super);
-    /**
-     * Override constructor.
-     * @warn do not fill.
-     */
-    // @ts-ignore ignoring the super call as we don't want to re-init
     function CubeHandler() {
-        var _this = this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.spheres = [];
         _this.time = 0;
         return _this;
@@ -100,12 +96,16 @@ var CubeHandler = /** @class */ (function (_super) {
         this.spheres = [sphereX, sphereY, sphereZ];
     };
     CubeHandler.prototype.onUpdate = function () {
-        this.camera.updateCameraCSS();
-        this.animation();
+        // CameraHandler.cameraPositionUpdate(this.camera);
+        var animationType = this.animation();
+        if (animationType === 'suspended') {
+            return;
+        }
+        CameraHandler_1.default.updateCameraCSS(this.camera);
         this.sphereUpdate();
-        // ;(document.querySelector('#plane-1') as HTMLElement).style.display = 'none'
-        this.projectPlane('#plane-1', { z: .5, ry: 0 });
-        this.projectPlane('#plane-2', { x: .5, ry: Math.PI / 2 });
+        var offset = ui_1.ui.range('offset', { initialValue: .5 }, { min: 0, max: 1 }).value;
+        this.projectPlane('#plane-1', { z: offset, ry: 0 });
+        this.projectPlane('#plane-2', { x: offset, ry: Math.PI / 2 });
     };
     CubeHandler.prototype.sphereUpdate = function () {
         var _a = __read(this.spheres, 3), sphereX = _a[0], sphereY = _a[1], sphereZ = _a[2];
@@ -126,9 +126,10 @@ var CubeHandler = /** @class */ (function (_super) {
             _this.rotation.y += (y * Math.PI - _this.rotation.y) * damping;
             _this.rotation.z += (z * Math.PI - _this.rotation.z) * damping;
         };
-        var timeScale = ui_1.ui.range('timeScale', 1, { min: 0, max: 10 }).value;
-        var options = ['rotating', 'fixed', 'identity', 'x:180', 'y:180', 'z:180', 'y:90'];
-        switch (ui_1.ui.enumButtons('animation', options, 'rotating').value) {
+        var timeScale = ui_1.ui.range('timeScale', { initialValue: 1 }, { min: 0, max: 10 }).value;
+        var options = ['suspended', 'rotating', 'fixed', 'identity', 'x:180', 'y:180', 'z:180', 'y:90'];
+        var animationType = ui_1.ui.buttons('animation', { initialValue: 'rotating' }, options).value;
+        switch (animationType) {
             case 'rotating': {
                 var speed = .5;
                 this.time += 1 / 60 * timeScale * speed;
@@ -161,13 +162,16 @@ var CubeHandler = /** @class */ (function (_super) {
         this.position.x = Math.sin(this.time);
         this.position.y = Math.sin(this.time);
         this.position.z = Math.sin(this.time + Math.PI / 2);
+        return animationType;
     };
     CubeHandler.prototype.projectPlane = function (id, _a) {
         var _b = _a === void 0 ? {} : _a, _c = _b.x, x = _c === void 0 ? 0 : _c, _d = _b.y, y = _d === void 0 ? 0 : _d, _e = _b.z, z = _e === void 0 ? 0 : _e, _f = _b.rx, rx = _f === void 0 ? 0 : _f, _g = _b.ry, ry = _g === void 0 ? 0 : _g, _h = _b.rz, rz = _h === void 0 ? 0 : _h;
         var canvas = document.querySelector('canvas#renderCanvas');
         var plane = document.querySelector("#hud ".concat(id));
-        var cameraHeight2 = 1 / Math.tan(this.camera.fov / 2);
-        var uiScale = ui_1.ui.range('scale', 1, { min: 0, max: 3 }).value;
+        var cameraHeight2 = this.camera.mode === core_1.Camera.PERSPECTIVE_CAMERA
+            ? 1 / Math.tan(this.camera.fov / 2)
+            : 1 / this.camera._projectionMatrix.m[5];
+        var uiScale = ui_1.ui.range('scale', { initialValue: 1 }, { min: 0, max: 3 }).value;
         var scale = new core_1.Vector3().setAll(uiScale);
         var rotation = new core_1.Vector3(rx, ry, rz).toQuaternion();
         var position = new core_1.Vector3(x, y, z);
@@ -177,8 +181,11 @@ var CubeHandler = /** @class */ (function (_super) {
         var matrix = targetMatrix.multiply(cameraMatrix);
         var numbers = utils_1.utils.cloneArray(matrix.m);
         utils_1.utils.incrementTranslation(numbers, 0, 0, -5);
-        utils_1.utils.scaleMatrix(numbers, cameraHeight2 * canvas.offsetHeight / 200 / 10);
-        utils_1.utils.scaleTranslation(numbers, cameraHeight2 * canvas.offsetHeight / 10);
+        var pixelScalar = this.camera.mode === core_1.Camera.PERSPECTIVE_CAMERA
+            ? cameraHeight2 * canvas.offsetHeight / 2 / 5
+            : canvas.offsetHeight / 2 / cameraHeight2;
+        utils_1.utils.scaleMatrix(numbers, pixelScalar / 200);
+        utils_1.utils.scaleTranslation(numbers, pixelScalar);
         utils_1.utils.scaleRow4(numbers, 1, -1);
         utils_1.utils.scaleRow4(numbers, 2, -1);
         plane.style.transform = "matrix3d(".concat(numbers.join(', '), ")");

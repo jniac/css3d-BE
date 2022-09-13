@@ -1,4 +1,4 @@
-import { UniversalCamera } from '@babylonjs/core';
+import { Camera, FreeCamera, UniversalCamera } from '@babylonjs/core';
 /**
  * This represents a script that is attached to a node in the editor.
  * Available nodes are:
@@ -18,12 +18,7 @@ import { UniversalCamera } from '@babylonjs/core';
  * The functions "onStart" and "onUpdate" are called automatically.
  */
 export default class CameraHandler extends UniversalCamera {
-    /**
-     * Override constructor.
-     * @warn do not fill.
-     */
-    protected constructor();
     onStart(): void;
-    onUpdate(): void;
-    updateCameraCSS(): void;
+    static cameraPositionUpdate(camera: FreeCamera): void;
+    static updateCameraCSS(camera: Camera): void;
 }

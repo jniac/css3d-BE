@@ -37,33 +37,17 @@ var ui_1 = require("./ui");
  */
 var CameraHandler = /** @class */ (function (_super) {
     __extends(CameraHandler, _super);
-    /**
-     * Override constructor.
-     * @warn do not fill.
-     */
-    // @ts-ignore ignoring the super call as we don't want to re-init
     function CameraHandler() {
-        var _this = this;
-        return _this;
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     CameraHandler.prototype.onStart = function () {
         this.position.set(0, 0, -6);
         this.rotation.set(0, 0, 0);
         Object.assign(window, { camera: this });
     };
-    CameraHandler.prototype.onUpdate = function () {
-    };
-    CameraHandler.prototype.updateCameraCSS = function () {
-        var camera = this;
-        var canvas = document.querySelector('canvas#renderCanvas');
-        var hud = document.querySelector('#hud');
-        var fov = ui_1.ui.range('fov', 0.8, { min: 0.1, max: 2 }).value;
-        camera.fov = fov;
-        var cameraHeight2 = 1 / Math.tan(camera.fov / 2);
-        var perspective = canvas.offsetHeight * cameraHeight2 / 2;
-        hud.style.perspective = "".concat(perspective, "px");
+    CameraHandler.cameraPositionUpdate = function (camera) {
         var views = ['facing', 'top-down'];
-        var _a = ui_1.ui.enumButtons('view', views, 'facing'), view = _a.value, hasChanged = _a.hasChanged;
+        var _a = ui_1.ui.buttons('view', 'facing', views), view = _a.value, hasChanged = _a.hasChanged;
         if (hasChanged) {
             switch (view) {
                 case 'facing': {
@@ -77,6 +61,21 @@ var CameraHandler = /** @class */ (function (_super) {
                     break;
                 }
             }
+        }
+    };
+    CameraHandler.updateCameraCSS = function (camera) {
+        var canvas = document.querySelector('canvas#renderCanvas');
+        var hud = document.querySelector('#hud');
+        // const { value: fov } = ui.range('fov', 0.8, { min: 0.1, max: 2 });
+        // camera.fov = fov;
+        var fov = camera.fov;
+        if (fov > 0) {
+            var cameraHeight2 = 1 / Math.tan(camera.fov / 2);
+            var perspective = canvas.offsetHeight * cameraHeight2 / 2;
+            hud.style.perspective = "".concat(perspective, "px");
+        }
+        else {
+            hud.style.perspective = 'none';
         }
     };
     return CameraHandler;

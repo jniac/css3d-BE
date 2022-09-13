@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.utils = exports.toString = exports.round = exports.centerModulo = exports.cloneArray = exports.scaleRow3 = exports.scaleRow4 = exports.scaleMatrix = exports.getColVec3 = exports.getColVec4 = exports.getRowVec3 = exports.getRowVec4 = exports.incrementTranslation = exports.scaleTranslation = exports.getTranslation = exports.swapMatrixOrder = void 0;
+exports.utils = exports.toString = exports.matrixToString = exports.round = exports.centerModulo = exports.cloneArray = exports.scaleRow3 = exports.scaleRow4 = exports.scaleMatrix = exports.getColVec3 = exports.getColVec4 = exports.getRowVec3 = exports.getRowVec4 = exports.incrementTranslation = exports.scaleTranslation = exports.getTranslation = exports.swapMatrixOrder = void 0;
 var core_1 = require("@babylonjs/core");
 /*
 
@@ -9,6 +9,7 @@ var core_1 = require("@babylonjs/core");
   g | h | i | z
   0 | 0 | 0 | 1
 
+  row-major                 babylon
   00 | 01 | 02 | 03    -    00 | 04 | 08 | 12
   04 | 05 | 06 | 07    -    01 | 05 | 09 | 13
   08 | 09 | 10 | 11    -    02 | 06 | 10 | 14
@@ -101,9 +102,40 @@ var round = function (x, base) {
     return Math.round(x / base) * base;
 };
 exports.round = round;
+var matrixToString = function (m) {
+    // 00 | 04 | 08 | 12
+    // 01 | 05 | 09 | 13
+    // 02 | 06 | 10 | 14
+    // 03 | 07 | 11 | 15
+    var f1 = function (n) { return n.toFixed(2); };
+    var getCol = function (x, y, z, w, decimals) {
+        if (decimals === void 0) { decimals = 3; }
+        var tr = [x, y, z, w].map(function (n) { return n.toFixed(decimals); });
+        var tr_max = tr.reduce(function (max, x) { return Math.max(x.length, max); }, 0);
+        return tr.map(function (x) { return x.padStart(tr_max, ' '); });
+    };
+    var R = getCol(m[0], m[1], m[2], m[3], 3);
+    var U = getCol(m[4], m[5], m[6], m[7], 3);
+    var F = getCol(m[8], m[9], m[10], m[11], 3);
+    var tr = getCol(m[12], m[13], m[14], m[15], 2);
+    var lines = [
+        [R[0], U[0], F[0], tr[0]].join(', '),
+        [R[1], U[1], F[1], tr[1]].join(', '),
+        [R[2], U[2], F[2], tr[2]].join(', '),
+        [R[3], U[3], F[3], tr[3]].join(', '),
+    ];
+    return lines.join('\n');
+};
+exports.matrixToString = matrixToString;
 var toString = function (value) {
     if (value instanceof core_1.Vector3) {
         return "(".concat(value.asArray().map(function (x) { return x.toFixed(1); }).join(', '), ")");
+    }
+    if (value instanceof core_1.Matrix) {
+        return "matrix:\n".concat((0, exports.matrixToString)(value.m));
+    }
+    if (Array.isArray(value) && value.length === 16 && value.every(function (x) { return typeof x === 'number'; })) {
+        return "matrix:\n".concat((0, exports.matrixToString)(value));
     }
     return '??';
 };

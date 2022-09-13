@@ -1,4 +1,4 @@
-import { Color3, Material, Matrix, Mesh, MeshBuilder, Quaternion, StandardMaterial, UniversalCamera, Vector3 } from '@babylonjs/core'
+import { Camera, Color3, Material, Matrix, Mesh, MeshBuilder, StandardMaterial, Vector3 } from '@babylonjs/core'
 import CameraHandler from './CameraHandler'
 import { fromScene } from './decorators'
 import { ui } from './ui'
@@ -24,13 +24,6 @@ import { utils } from './utils'
  */
 export default class CubeHandler extends Mesh {
     @fromScene("camera") public camera: CameraHandler;
-
-    /**
-     * Override constructor.
-     * @warn do not fill.
-     */
-    // @ts-ignore ignoring the super call as we don't want to re-init
-    protected constructor() { }
 
     /**
      * Called on the node is being initialized.
@@ -66,12 +59,19 @@ export default class CubeHandler extends Mesh {
     }
 
     public onUpdate(): void {
-        this.camera.updateCameraCSS()
-        this.animation()
+        // CameraHandler.cameraPositionUpdate(this.camera);
+        const animationType = this.animation()
+
+        if (animationType === 'suspended') {
+            return
+        }
+
+        CameraHandler.updateCameraCSS(this.camera);
         this.sphereUpdate()
-        // ;(document.querySelector('#plane-1') as HTMLElement).style.display = 'none'
-        this.projectPlane('#plane-1', { z: .5, ry: 0 })
-        this.projectPlane('#plane-2', { x: .5, ry: Math.PI / 2 })
+
+        const { value: offset } = ui.range('offset', { initialValue: .5 }, { min: 0, max: 1 })
+        this.projectPlane('#plane-1', { z: offset, ry: 0 })
+        this.projectPlane('#plane-2', { x: offset, ry: Math.PI / 2 })
     }
 
     time = 0
@@ -96,9 +96,10 @@ export default class CubeHandler extends Mesh {
             this.rotation.z += (z * Math.PI - this.rotation.z) * damping
         }
 
-        const { value: timeScale } = ui.range('timeScale', 1, { min: 0, max: 10 })
-        const options = ['rotating', 'fixed', 'identity', 'x:180', 'y:180', 'z:180', 'y:90'] as const
-        switch (ui.enumButtons('animation', options, 'rotating').value) {
+        const { value: timeScale } = ui.range('timeScale', { initialValue: 1 }, { min: 0, max: 10 })
+        const options = ['suspended', 'rotating', 'fixed', 'identity', 'x:180', 'y:180', 'z:180', 'y:90'] as const
+        const animationType = ui.buttons('animation', { initialValue: 'rotating' }, options).value
+        switch (animationType) {
             case 'rotating': {
                 const speed = .5
                 this.time += 1 / 60 * timeScale * speed
@@ -132,6 +133,8 @@ export default class CubeHandler extends Mesh {
         this.position.x = Math.sin(this.time)
         this.position.y = Math.sin(this.time)
         this.position.z = Math.sin(this.time + Math.PI / 2)
+
+        return animationType
     }
 
     public projectPlane (id: string, {
@@ -144,9 +147,11 @@ export default class CubeHandler extends Mesh {
     } = {}): void {
         const canvas = document.querySelector('canvas#renderCanvas') as HTMLCanvasElement
         const plane = document.querySelector(`#hud ${id}`) as HTMLDivElement
-        const cameraHeight2 = 1 / Math.tan(this.camera.fov / 2)
+        const cameraHeight2 = this.camera.mode === Camera.PERSPECTIVE_CAMERA
+            ? 1 / Math.tan(this.camera.fov / 2)
+            : 1 / this.camera._projectionMatrix.m[5]
 
-        const uiScale = ui.range('scale', 1, { min: 0, max: 3 }).value
+        const uiScale = ui.range('scale', { initialValue: 1 }, { min: 0, max: 3 }).value
         const scale = new Vector3().setAll(uiScale)
         const rotation = new Vector3(rx, ry, rz).toQuaternion()
         const position = new Vector3(x, y, z)
@@ -158,8 +163,11 @@ export default class CubeHandler extends Mesh {
 
         const numbers = utils.cloneArray(matrix.m)
         utils.incrementTranslation(numbers, 0, 0, -5)
-        utils.scaleMatrix(numbers, cameraHeight2 * canvas.offsetHeight / 200 / 10)
-        utils.scaleTranslation(numbers, cameraHeight2 * canvas.offsetHeight / 10)
+        const pixelScalar = this.camera.mode === Camera.PERSPECTIVE_CAMERA 
+            ? cameraHeight2 * canvas.offsetHeight / 2 / 5
+            : canvas.offsetHeight / 2 / cameraHeight2
+        utils.scaleMatrix(numbers, pixelScalar / 200)
+        utils.scaleTranslation(numbers, pixelScalar)
         utils.scaleRow4(numbers, 1, -1)
         utils.scaleRow4(numbers, 2, -1)
 

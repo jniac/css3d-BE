@@ -1,5 +1,5 @@
 
-import { Vector3, Vector4 } from '@babylonjs/core'
+import { Matrix, Vector3, Vector4 } from '@babylonjs/core'
 
 /*
 
@@ -8,6 +8,7 @@ import { Vector3, Vector4 } from '@babylonjs/core'
   g | h | i | z
   0 | 0 | 0 | 1
 
+  row-major                 babylon
   00 | 01 | 02 | 03    -    00 | 04 | 08 | 12
   04 | 05 | 06 | 07    -    01 | 05 | 09 | 13
   08 | 09 | 10 | 11    -    02 | 06 | 10 | 14
@@ -121,9 +122,39 @@ export const round = (x: number, base: number) => {
   return Math.round(x / base) * base;
 }
 
+export const matrixToString = (m: ArrayLike<number>) => {
+  // 00 | 04 | 08 | 12
+  // 01 | 05 | 09 | 13
+  // 02 | 06 | 10 | 14
+  // 03 | 07 | 11 | 15
+  const f1 = (n: number) => n.toFixed(2)
+  const getCol = (x: number, y: number, z: number, w: number, decimals = 3) => {
+    const tr = [x, y, z, w].map(n => n.toFixed(decimals))
+    const tr_max = tr.reduce((max, x) => Math.max(x.length, max), 0)
+    return tr.map(x => x.padStart(tr_max, ' '))
+  }
+  const R = getCol(m[0], m[1], m[2], m[3], 3)
+  const U = getCol(m[4], m[5], m[6], m[7], 3)
+  const F = getCol(m[8], m[9], m[10], m[11], 3)
+  const tr = getCol(m[12], m[13], m[14], m[15], 2)
+  const lines = [
+    [R[0], U[0], F[0], tr[0]].join(', '),
+    [R[1], U[1], F[1], tr[1]].join(', '),
+    [R[2], U[2], F[2], tr[2]].join(', '),
+    [R[3], U[3], F[3], tr[3]].join(', '),
+  ]
+  return lines.join('\n')
+}
+
 export const toString = (value: unknown) => {
   if (value instanceof Vector3) {
     return `(${value.asArray().map(x => x.toFixed(1)).join(', ')})`
+  }
+  if (value instanceof Matrix) {
+    return `matrix:\n${matrixToString(value.m)}`
+  }
+  if (Array.isArray(value) && value.length === 16 && value.every(x => typeof x === 'number')) {
+    return `matrix:\n${matrixToString(value)}`
   }
   return '??'
 }

@@ -10,11 +10,27 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ui = void 0;
 var style = document.createElement('style');
 style.innerHTML =
-    /* css */ "\n  #ui {\n    position: fixed;\n    width: 100%;\n    height: 100%;\n    pointer-events: none;\n    display: flex;\n    flex-direction: column;\n  }\n\n  #ui > div.input {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    pointer-events: all;\n    padding: 2px;\n  }\n\n  #ui > div.input > .label {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    flex: 0 0 100px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    font-size: 14px;\n  }\n\n  #ui > div.input > * + * {\n    margin-left: 4px;\n  }\n\n  #ui > div.input .value {\n    padding-left: 4px;\n    font-size: .66em;\n  }\n\n  #ui button,\n  #ui select {\n    font-family: inherit;\n  }\n  #ui button.selected {\n    font-weight: 900;\n  }\n  #ui div.input .name {\n    cursor: pointer;\n  }\n";
+    /* css */ "\n  #ui {\n    position: fixed;\n    width: 100%;\n    height: 100%;\n    pointer-events: none;\n    display: flex;\n    flex-direction: column;\n  }\n\n  #ui > div.input {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    pointer-events: all;\n    padding: 2px;\n  }\n\n  #ui > div.input > .label {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    flex: 0 0 140px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    font-size: 14px;\n  }\n\n  #ui > div.input > * + * {\n    margin-left: 4px;\n  }\n\n  #ui > div.input .value {\n    padding-left: 4px;\n    font-size: .66em;\n  }\n\n  #ui button,\n  #ui select {\n    font-family: inherit;\n  }\n  #ui button.selected {\n    font-weight: 900;\n  }\n  #ui div.input .name {\n    cursor: pointer;\n  }\n";
 document.head.append(style);
 var uiElement = document.querySelector('#ui');
 var frame = 0;
@@ -54,6 +70,7 @@ var factory = {
             input.oninput = function () {
                 if (type === 'range') {
                     divValue.innerHTML = "(".concat(parseFloat(input.value).toFixed(2), ")");
+                    input.setAttribute('value', input.value);
                 }
                 if (type === 'checkbox') {
                     divValue.innerHTML = "(".concat(input.checked, ")");
@@ -70,11 +87,47 @@ var factory = {
             var div = uiElement.querySelector("#".concat(name));
             if (div) {
                 var input = div.querySelector('input');
-                var value = Number.parseFloat(input.value);
+                var value = Number.parseFloat(input.getAttribute('value'));
                 var hasChanged = Number.parseInt(div.dataset.frame) === frame - 1;
                 return { value: value, input: input, hasChanged: hasChanged };
             }
             return create(name, type, props);
+        };
+        return { create: create, get: get };
+    })(),
+    range: (function () {
+        var create = function (name, value, _a) {
+            if (value === void 0) { value = 1; }
+            var _b = _a === void 0 ? {} : _a, _c = _b.min, min = _c === void 0 ? 0 : _c, _d = _b.max, max = _d === void 0 ? 1 : _d, _e = _b.step, step = _e === void 0 ? 'any' : _e, _f = _b.decimals, decimals = _f === void 0 ? 2 : _f;
+            var format = function (n) { return n.toFixed(decimals); };
+            var div = getDiv(name, 'range', /* html */ "\n        <div class=\"label\">\n          <div class=\"name\">".concat(name, "</div>\n          <div class=\"value\">(").concat(format(value), ")</div>\n        </div>\n        <input type=\"range\" min=\"").concat(min, "\" max=\"").concat(max, "\" step=\"").concat(step, "\" value=\"").concat(value, "\"></input>\n      "));
+            var input = div.querySelector('input');
+            var nameDiv = div.querySelector('.name');
+            var valueDiv = div.querySelector('.value');
+            input.oninput = function () {
+                valueDiv.innerHTML = format(Number.parseFloat(input.value));
+            };
+            nameDiv.onclick = function () {
+                input.value = value.toString();
+                valueDiv.innerHTML = format(Number.parseFloat(input.value));
+            };
+            return { input: input, value: value, hasChanged: false };
+        };
+        var get = function (name, value, props) {
+            if (value === void 0) { value = 1; }
+            if (props === void 0) { props = {}; }
+            var div = uiElement.querySelector("#".concat(name));
+            if (div) {
+                var input = div.querySelector('input');
+                var value_1 = Number.parseFloat(input.value);
+                var hasChanged = Number.parseInt(div.dataset.frame) === frame - 1;
+                return { input: input, value: value_1, hasChanged: hasChanged };
+            }
+            if (Array.isArray(props)) {
+                var _a = __read(props, 2), min = _a[0], max = _a[1];
+                props = { min: min, max: max };
+            }
+            return create(name, value, props);
         };
         return { create: create, get: get };
     })(),
@@ -150,10 +203,12 @@ var factory = {
         return { create: create, get: get };
     })(),
 };
+var range = function (name, value, props) {
+    if (props === void 0) { props = {}; }
+    return factory.range.get(name, value, props);
+};
 exports.ui = {
-    range: function (name, value, props) {
-        return factory.input.get(name, 'range', __assign({ value: value }, props));
-    },
+    range: range,
     checkbox: function (name, value, props) {
         return factory.input.get(name, 'checkbox', __assign({ value: value }, props));
     },

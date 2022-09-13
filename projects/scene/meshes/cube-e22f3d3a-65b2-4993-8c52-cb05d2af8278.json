@@ -9,7 +9,7 @@
 			"tags": "modified",
 			"position": [
 				0,
-				0,
+				1.5020889043807983,
 				0
 			],
 			"rotation": [
@@ -51,7 +51,7 @@
 			"isBlocker": false,
 			"overrideMaterialSideOrientation": null,
 			"isUnIndexed": false,
-			"geometryUniqueId": 18,
+			"geometryUniqueId": 22,
 			"geometryId": "0a6933b0-9cd4-4243-a7a6-fec39bd16cea",
 			"subMeshes": null,
 			"materialUniqueId": 23,
