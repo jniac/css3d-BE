@@ -107,7 +107,6 @@ export const getPointer = (target: HTMLElement | string) => {
       ? (document.querySelector(target) as HTMLElement) 
       : target
 
-    console.log(targetElement)
     map.set(target, watch(targetElement))
   }
 

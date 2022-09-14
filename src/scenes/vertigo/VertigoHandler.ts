@@ -62,9 +62,9 @@ export default class VertigoHandler extends UniversalCamera {
             this.rotation.y = ui.range("ry", this.rotation.y, [-Math.PI, Math.PI]).value;
         })
 
-        const drag = getPointer('body')
-        this.rotation.y += drag.dragDelta.x * .001;
-        this.rotation.x += drag.dragDelta.y * .001;
+        const pointer = getPointer('canvas')
+        this.rotation.y += pointer.dragDelta.x * .001;
+        this.rotation.x += pointer.dragDelta.y * .001;
 
         if (this.getNeedUpdate() !== NeedUpdate.None) {
             this.updateVertigoCache();

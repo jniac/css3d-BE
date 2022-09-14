@@ -37,7 +37,6 @@ export const createGroup = (id: string) => {
 
 
 export const group = (id: string, callback: () => void) => {
-  console.log(id)
   const previousGroup = currentGroup
   currentGroup = (uiElement.querySelector(`div#${id}.group .contents`) as HTMLDivElement) ?? (createGroup(id).querySelector('.contents') as HTMLDivElement)
   callback()
