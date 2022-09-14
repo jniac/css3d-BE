@@ -11,23 +11,29 @@ enum NeedUpdate {
 
 export default class VertigoHandler extends UniversalCamera {
 
-    public perspective = 1;
+    public readonly perspectiveFovScalar = 0.8;
+
     public height = 4;
     public focusPosition = new Vector3();
+    
+    public get perspective() { return this.fov / this.perspectiveFovScalar; }
+    public set perspective(value: number) {
+        this.fov = value * this.perspectiveFovScalar;
+    }
     
     public onInitialize() {  
         Object.assign(window, { camera: this, Vector3 });
     }
     
     private vertigoCache = {
-        perspective: this.perspective,
+        fov: this.fov,
         height: this.height,
         focusPosition: this.focusPosition.clone(),
         rotation: this.rotation.clone(),
     }
 
     private updateVertigoCache() {
-        this.vertigoCache.perspective = this.perspective;
+        this.vertigoCache.fov = this.fov;
         this.vertigoCache.height = this.height;
         this.vertigoCache.focusPosition.copyFrom(this.focusPosition);
         this.vertigoCache.rotation.copyFrom(this.rotation);
@@ -35,7 +41,7 @@ export default class VertigoHandler extends UniversalCamera {
 
     private getNeedUpdate() {
         const cache = this.vertigoCache
-        if (this.height !== cache.height || this.perspective !== cache.perspective) {
+        if (this.height !== cache.height || this.fov !== cache.fov) {
             return NeedUpdate.TransformAndProjection;
         }
         if (this.focusPosition.equalsWithEpsilon(cache.focusPosition, 1e-6) === false || this.rotation.equalsWithEpsilon(cache.rotation, 1e-6) === false) {
@@ -50,7 +56,7 @@ export default class VertigoHandler extends UniversalCamera {
         const engine = this.getEngine();
         const aspect = engine.getScreenAspectRatio();
         const { useRightHandedSystem } = this._scene;
-        computeVertigo(this, this.focusPosition, this.perspective, this.height, aspect, { useRightHandedSystem });
+        computeVertigo(this, this.focusPosition, this.height, aspect, { useRightHandedSystem });
     }
 
     public onUpdate() {
@@ -71,7 +77,7 @@ export default class VertigoHandler extends UniversalCamera {
             const engine = this.getEngine();
             const aspect = engine.getScreenAspectRatio();
             const { useRightHandedSystem } = this._scene;
-            computeVertigo(this, this.focusPosition, this.perspective, this.height, aspect, { useRightHandedSystem });
+            computeVertigo(this, this.focusPosition, this.height, aspect, { useRightHandedSystem });
         }
     }
 }
