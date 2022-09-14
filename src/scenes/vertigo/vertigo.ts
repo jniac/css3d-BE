@@ -1,10 +1,23 @@
 import { Camera, Matrix, Vector3 } from '@babylonjs/core'
 
-const perspectiveOneFov = 0.8
-const fovEpsilon = 0.01
-
 const vector = new Vector3()
 const matrix = new Matrix()
+
+type Options = Partial<{
+    /** Is it right handed? Babylon is! By default. */
+    useRightHandedSystem: boolean
+    /** Distance "before" the focus point to be rendered. */
+    rangeMin: number 
+    /** Distance "behind" the focus point to be rendered. */
+    rangeMax: number
+    /** "near" min value.  */
+    nearMin: number
+    /** "far" min value.  */
+    farMax: number
+    /** Threshold below which the camera is considered as being orthographic. Approximately 1° */
+    fovEpsilon: number
+}>
+
 
 export const computeVertigo = (
     camera: Camera,
@@ -14,10 +27,11 @@ export const computeVertigo = (
     {
         useRightHandedSystem = true,
         rangeMin = -100,
-        rangeMax = 100,
-        nearMin = .01, 
-        farMax = 1e5
-    } = {},
+        rangeMax = 1000,
+        nearMin = .01,
+        farMax = 1e5,
+        fovEpsilon = .02,
+    }: Options = {},
 ) => {
 
     if (camera.fov > fovEpsilon) {
@@ -27,8 +41,8 @@ export const computeVertigo = (
         vector.set(0, 0, length).applyRotationQuaternionInPlace(camera.absoluteRotation)
         focusPosition.subtractToRef(vector, vector)
         const fn = useRightHandedSystem ? Matrix.PerspectiveFovRHToRef : Matrix.PerspectiveFovLHToRef
-        const near = Math.max(nearMin, length + rangeMin); 
-        const far = Math.min(farMax, length + rangeMax); 
+        const near = Math.max(nearMin, length + rangeMin);
+        const far = Math.min(farMax, length + rangeMax);
         fn(camera.fov, aspect, near, far, matrix)
 
         // update the camera
@@ -46,7 +60,9 @@ export const computeVertigo = (
         vector.set(0, 0, length).applyRotationQuaternionInPlace(camera.absoluteRotation)
         focusPosition.subtractToRef(vector, vector)
         const fn = useRightHandedSystem ? Matrix.OrthoOffCenterRHToRef : Matrix.OrthoOffCenterLHToRef
-        fn(-w2, w2, -h2, h2, nearMin, length + farMax, matrix)
+        const near = Math.max(nearMin, length + rangeMin);
+        const far = Math.min(farMax, length + rangeMax);
+        fn(-w2, w2, -h2, h2, near, far, matrix)
 
         // update the camera
         camera.mode = Camera.ORTHOGRAPHIC_CAMERA
