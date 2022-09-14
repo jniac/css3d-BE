@@ -3,6 +3,8 @@ import { computeVertigo } from './vertigo'
 import { ui } from '../ui'
 import { getPointer } from './drag'
 
+const clamp = (x: number, min = 0, max = 1) => x < min ? min : x > max ? max : x
+
 enum NeedUpdate {
     None = 0,
     TransformOnly = 1,
@@ -69,8 +71,9 @@ export default class VertigoHandler extends UniversalCamera {
         })
 
         const pointer = getPointer('canvas')
-        this.rotation.y += pointer.dragDelta.x * .001;
-        this.rotation.x += pointer.dragDelta.y * .001;
+        this.rotation.y += pointer.dragDelta.x * .003;
+        this.rotation.x += pointer.dragDelta.y * .003;
+        this.height = clamp(this.height + pointer.wheelDelta.y * .01, 1, 20)
 
         if (this.getNeedUpdate() !== NeedUpdate.None) {
             this.updateVertigoCache();
