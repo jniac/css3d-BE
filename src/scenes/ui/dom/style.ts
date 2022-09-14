@@ -2,6 +2,8 @@ const style = document.createElement('style')
 style.innerHTML =
     /* css */ `
   #ui {
+    --backdrop: blur(16px) brightness(1.15);
+
     position: fixed;
     width: 100%;
     height: 100%;
@@ -19,6 +21,7 @@ style.innerHTML =
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    backdrop-filter: var(--backdrop);
   }
 
   #ui .group > .name {
@@ -36,7 +39,13 @@ style.innerHTML =
     align-items: center;
     pointer-events: all;
     padding: 2px;
+    backdrop-filter: var(--backdrop);
   }
+
+  #ui div.input + div.input {
+    border-top: solid 1px black;
+  }
+
 
   #ui div.input > .label {
     display: flex;
