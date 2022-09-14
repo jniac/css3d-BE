@@ -2,12 +2,12 @@
 	"materials": [],
 	"meshes": [
 		{
-			"name": "New Sphere",
-			"id": "99adf9ef-d3b1-4f89-a8f5-73c708a376af",
-			"uniqueId": 1835,
+			"name": "Earth",
+			"id": "f3597fb1-1a82-44d8-a672-5b511c3b69ee",
+			"uniqueId": 164,
 			"type": "Mesh",
 			"position": [
-				0,
+				1.5,
 				0,
 				0
 			],
@@ -21,7 +21,7 @@
 				1,
 				1
 			],
-			"localMatrix": {
+			"pivotMatrix": {
 				"0": 1,
 				"1": 0,
 				"2": 0,
@@ -68,7 +68,8 @@
 					"name": "None"
 				},
 				"renderingGroupId": 0,
-				"_waitingParentId": null
+				"_waitingParentId": null,
+				"doNotExport": false
 			},
 			"instances": [],
 			"animations": [],

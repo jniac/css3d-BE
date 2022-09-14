@@ -7,9 +7,10 @@
 		{
 			"isMultiMaterial": false,
 			"bindedMeshes": [
-				"6a927ea7-51d9-4248-9b80-4d34b53b386e"
+				"e22f3d3a-65b2-4993-8c52-cb05d2af8278",
+				"a1672767-f704-43b4-ac57-b588bfef1f00"
 			],
-			"json": "materials/sky.material"
+			"json": "materials/cube.material"
 		},
 		{
 			"isMultiMaterial": false,
@@ -21,13 +22,8 @@
 		{
 			"isMultiMaterial": false,
 			"bindedMeshes": [
-				"0095e951-cf96-4941-921c-73314f6d4282"
-			],
-			"json": "materials/reddish.material"
-		},
-		{
-			"isMultiMaterial": false,
-			"bindedMeshes": [
+				"f3597fb1-1a82-44d8-a672-5b511c3b69ee",
+				"ae2ddd6b-a694-41d8-8111-c0f322c03372",
 				"99adf9ef-d3b1-4f89-a8f5-73c708a376af"
 			],
 			"json": "materials/earth.material"
@@ -35,22 +31,30 @@
 		{
 			"isMultiMaterial": false,
 			"bindedMeshes": [
-				"e22f3d3a-65b2-4993-8c52-cb05d2af8278",
-				"a1672767-f704-43b4-ac57-b588bfef1f00"
+				"6a927ea7-51d9-4248-9b80-4d34b53b386e"
 			],
-			"json": "materials/cube.material"
+			"json": "materials/sky.material"
+		},
+		{
+			"isMultiMaterial": false,
+			"bindedMeshes": [
+				"0095e951-cf96-4941-921c-73314f6d4282"
+			],
+			"json": "materials/reddish.material"
 		}
 	],
 	"textures": [
 		"2k_earth_daymap.jpeg-2c1c079e-cf8f-4b5a-bfee-c0c9b3974591.json"
 	],
 	"meshes": [
-		"cube-e22f3d3a-65b2-4993-8c52-cb05d2af8278.json",
 		"sky-6a927ea7-51d9-4248-9b80-4d34b53b386e.json",
 		"New Cube-a1672767-f704-43b4-ac57-b588bfef1f00.json",
+		"cube-e22f3d3a-65b2-4993-8c52-cb05d2af8278.json",
 		"New Cube-0095e951-cf96-4941-921c-73314f6d4282.json",
 		"ground-eee4645a-645f-4faf-b10b-868d396f01f0.json",
-		"New Sphere-99adf9ef-d3b1-4f89-a8f5-73c708a376af.json"
+		"Earth-99adf9ef-d3b1-4f89-a8f5-73c708a376af.json",
+		"Earth-ae2ddd6b-a694-41d8-8111-c0f322c03372.json",
+		"Earth-f3597fb1-1a82-44d8-a672-5b511c3b69ee.json"
 	],
 	"transformNodes": [],
 	"particleSystems": [],
@@ -302,7 +306,7 @@
 			"applyGravity": false,
 			"rotation": [
 				0.41325244314152404,
-				0.3129332133454676,
+				0.3126754008454676,
 				0
 			],
 			"speed": 2,
