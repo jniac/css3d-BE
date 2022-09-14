@@ -1,6 +1,6 @@
-import { Camera, FreeCamera, Matrix, Quaternion, TransformNode, UniversalCamera, Vector3 } from '@babylonjs/core'
-import { Node } from "@babylonjs/core/node";
+import { Camera, FreeCamera, UniversalCamera } from '@babylonjs/core'
 import { ui } from './ui'
+import { computeVertigoPerspective } from './vertigo/vertigo'
 
 /**
  * This represents a script that is attached to a node in the editor.
@@ -51,17 +51,6 @@ export default class CameraHandler extends UniversalCamera {
     public static updateCameraCSS(camera: Camera): void {
         const canvas = document.querySelector('canvas#renderCanvas') as HTMLCanvasElement
         const hud = document.querySelector('#hud') as HTMLDivElement
-        
-        // const { value: fov } = ui.range('fov', 0.8, { min: 0.1, max: 2 });
-        // camera.fov = fov;
-
-        const { fov } = camera
-        if (fov > 0) {
-            const cameraHeight2 = 1 / Math.tan(camera.fov / 2)
-            const perspective = canvas.offsetHeight * cameraHeight2 / 2
-            hud.style.perspective = `${perspective}px`
-        } else {
-            hud.style.perspective = 'none'
-        }
+        hud.style.perspective = computeVertigoPerspective(camera, canvas.offsetHeight)
     }
 }

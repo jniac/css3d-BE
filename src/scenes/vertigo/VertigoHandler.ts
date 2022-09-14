@@ -1,5 +1,5 @@
 import { UniversalCamera, Vector3 } from '@babylonjs/core';
-import { computeVertigo } from './vertigo'
+import { computeVertigoCamera } from './vertigo'
 import { ui } from '../ui'
 import { getPointer } from './drag'
 
@@ -58,7 +58,7 @@ export default class VertigoHandler extends UniversalCamera {
         const engine = this.getEngine();
         const aspect = engine.getScreenAspectRatio();
         const { useRightHandedSystem } = this._scene;
-        computeVertigo(this, this.focusPosition, this.height, aspect, { useRightHandedSystem });
+        computeVertigoCamera(this, this.focusPosition, this.height, aspect, { useRightHandedSystem });
     }
 
     public onUpdate() {
@@ -80,7 +80,7 @@ export default class VertigoHandler extends UniversalCamera {
             const engine = this.getEngine();
             const aspect = engine.getScreenAspectRatio();
             const { useRightHandedSystem } = this._scene;
-            computeVertigo(this, this.focusPosition, this.height, aspect, { useRightHandedSystem });
+            computeVertigoCamera(this, this.focusPosition, this.height, aspect, { useRightHandedSystem });
         }
     }
 }

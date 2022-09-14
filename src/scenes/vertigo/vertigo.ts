@@ -18,8 +18,18 @@ type Options = Partial<{
     fovEpsilon: number
 }>
 
+export const computeVertigoPerspective = (camera: Camera, canvasHeight: number) => {
+    const { fov } = camera
+    if (fov > 0) {
+        const cameraHeight2 = 1 / Math.tan(camera.fov / 2)
+        const perspective = canvasHeight * cameraHeight2 / 2
+        return `${perspective}px`
+    } else {
+        return 'none'
+    }
+}
 
-export const computeVertigo = (
+export const computeVertigoCamera = (
     camera: Camera,
     focusPosition: Vector3,
     height: number,
