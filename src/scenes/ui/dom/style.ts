@@ -45,6 +45,12 @@ style.innerHTML =
     backdrop-filter: var(--backdrop);
   }
 
+  #ui div.input:hover {
+    font-weight: 500;
+    font-style: italic;
+    color: #06f;
+  }
+
   #ui div.input + div.input {
     border-top: solid 1px black;
   }
@@ -72,8 +78,28 @@ style.innerHTML =
     font-size: .66em;
   }
 
+  #ui div.input.button {
+
+    /* Because of conflicts with some bad-css somewhere. */
+    border-radius: 0;
+    width: unset;
+    height: unset;
+  }
+
+  #ui div.input.button.switch.switch-on {
+    font-weight: 900;
+    font-style: italic;
+  }
+
+  #ui div.input.button.switch.switch-off {
+    font-weight: 300;
+    font-style: none;
+  }
+
   #ui div.input.button button {
     flex: 1 0 0;
+    font-weight: inherit;
+    font-style: inherit;
   }
 
   #ui button,

@@ -31,10 +31,10 @@ const create = (
   valueArg: InputValueArg<number>, 
   props?: PropsArg,
 ): InputResult<number> => {
+  const { id, displayName } = resolveNameArg(name)
   const { value, initialValue } = resolveValueArg(valueArg)
   const { min, max, step, decimals } = resolvePropsArg(props)
   const format = (n: number) => n.toFixed(decimals)
-  const { id, displayName } = resolveNameArg(name)
   const div = createDiv(id, 'range', /* html */`
     <div class="label">
       <div class="name">${displayName}</div>

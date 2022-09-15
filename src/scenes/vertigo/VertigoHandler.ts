@@ -72,6 +72,13 @@ export default class VertigoHandler extends UniversalCamera {
             this.height = ui.range("height", this.height, [1, 20]).value;
             this.rotation.x = ui.range("rx", this.rotation.x, [-Math.PI / 2, Math.PI / 2]).value;
             this.rotation.y = ui.range("ry", this.rotation.y, [-Math.PI, Math.PI]).value;
+
+            if (ui.button('test').hasChanged) {
+                alert('ok');
+            }
+            if (ui.button('switch', true).value) {
+                
+            }
         })
 
         const pointer = getPointer('canvas')
