@@ -72,6 +72,10 @@ style.innerHTML =
     font-size: .66em;
   }
 
+  #ui div.input.button button {
+    flex: 1 0 0;
+  }
+
   #ui button,
   #ui select {
     font-family: inherit;

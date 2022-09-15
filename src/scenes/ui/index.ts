@@ -1,4 +1,5 @@
 import { range } from './input/range'
+import { button } from './input/button'
 import { buttons } from './input/buttons'
 import { group, setStyle } from './dom'
 
@@ -8,6 +9,7 @@ export const ui = {
     return ui
   },
   range,
+  button,
   buttons,
   group,
 }
