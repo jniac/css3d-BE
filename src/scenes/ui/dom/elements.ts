@@ -1,3 +1,4 @@
+import { InputNameArg, resolveNameArg } from '../types'
 
 type DivProps = {
   updateValue: (value: any) => void,
@@ -15,8 +16,13 @@ const createUiDiv = () => {
   return div
 }
 
-export const getUiDiv = () => {
+export const getUiRootDiv = () => {
   return (document.querySelector('div#ui') as HTMLDivElement) ?? createUiDiv()
+}
+
+export const getUiInputDiv = (name: InputNameArg) => {
+  const { id } = resolveNameArg(name)
+  return getUiRootDiv().querySelector(`#${id}`) as HTMLDivElement
 }
 
 export const createDiv = (id: string, className: string, innerHTML: string) => {
@@ -24,7 +30,7 @@ export const createDiv = (id: string, className: string, innerHTML: string) => {
   div.id = id
   div.className = `input ${className}`
   div.innerHTML = innerHTML
-  const parent = currentGroup ?? getUiDiv()
+  const parent = currentGroup ?? getUiRootDiv()
   parent.append(div)
   divProps.set(div, { updateValue: noop })
   return div
@@ -39,7 +45,7 @@ export const createGroup = (id: string) => {
     <div class="contents">
     </div>
   `
-  const parent = currentGroup ?? getUiDiv()
+  const parent = currentGroup ?? getUiRootDiv()
   parent.append(div)
   return div
 }
@@ -48,7 +54,7 @@ export const createGroup = (id: string) => {
 
 export const group = (id: string, callback: () => void) => {
   const previousGroup = currentGroup
-  currentGroup = (getUiDiv().querySelector(`div#${id}.group .contents`) as HTMLDivElement) ?? (createGroup(id).querySelector('.contents') as HTMLDivElement)
+  currentGroup = (getUiRootDiv().querySelector(`div#${id}.group .contents`) as HTMLDivElement) ?? (createGroup(id).querySelector('.contents') as HTMLDivElement)
   callback()
   currentGroup = previousGroup
 }

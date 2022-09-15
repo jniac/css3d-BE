@@ -1,5 +1,5 @@
-import { divProps, frame, createDiv, getUiDiv } from '../dom'
-import { resolveUIValueArg, UIResult, UIValueArg } from '../types'
+import { divProps, frame, createDiv, getUiRootDiv, getUiInputDiv } from '../dom'
+import { resolveValueArg, InputResult, InputValueArg } from '../types'
 
 type Step = number | 'any'
 
@@ -28,10 +28,10 @@ const resolvePropsArg = (arg: PropsArg = {}): Required<Props> => {
 
 const create = (
   name: string, 
-  valueArg: UIValueArg<number>, 
+  valueArg: InputValueArg<number>, 
   props?: PropsArg,
-): UIResult<number> => {
-  const { value, initialValue } = resolveUIValueArg(valueArg)
+): InputResult<number> => {
+  const { value, initialValue } = resolveValueArg(valueArg)
   const { min, max, step, decimals } = resolvePropsArg(props)
   const format = (n: number) => n.toFixed(decimals)
   const div = createDiv(name, 'range', /* html */`
@@ -66,15 +66,15 @@ const create = (
 
 export const range = (
   name: string, 
-  valueArg: UIValueArg<number>, 
+  valueArg: InputValueArg<number>, 
   props: PropsArg = {},
- ): UIResult<number> => {
-  const div = getUiDiv().querySelector(`#${name}`) as HTMLDivElement
+ ): InputResult<number> => {
+  const div = getUiInputDiv(name)
   if (div) {
     const input = div.querySelector('input')
     const inputValue = Number.parseFloat(input.value)
     const hasChanged = Number.parseInt(div.dataset.frame) === frame - 1
-    const value = hasChanged ? inputValue : resolveUIValueArg(valueArg, inputValue).value
+    const value = hasChanged ? inputValue : resolveValueArg(valueArg, inputValue).value
     divProps.get(div).updateValue(value)
     return { input, value, hasChanged }
   }

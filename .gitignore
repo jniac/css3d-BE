@@ -4,3 +4,6 @@ node_modules
 build
 declaration
 dist
+
+# Misc:
+.DS_Store

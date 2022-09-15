@@ -1,10 +1,13 @@
 const style = document.createElement('style')
+
 style.innerHTML =
     /* css */ `
   #ui {
     --backdrop: blur(16px) brightness(1.15);
 
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
@@ -85,4 +88,7 @@ style.innerHTML =
     flex-wrap: wrap;
   }
 `
+
 document.head.append(style)
+
+export {}

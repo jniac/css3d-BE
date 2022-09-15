@@ -1,17 +1,33 @@
 
-export type UIValueArg<T> = 
+export type InputNames = { displayName: string, id: string }
+export type InputNameArg = string | InputNames
+
+export const resolveNameArg = (arg: InputNameArg): InputNames => {
+  let displayName = '', id = ''
+  if (typeof arg === 'string') {
+    displayName = arg
+    id = arg
+  } else {
+    displayName = arg.displayName
+    id = arg.id    
+  }
+  id = id.replace(/\.\s/g, '_')
+  return { displayName, id }
+}
+
+export type InputValueArg<T> = 
   | { value: T, initialValue?: T } 
   | { initialValue: T }
   | [T, T] 
   | T
 
-export type UIResult<T> = {
+export type InputResult<T> = {
   value: T
   hasChanged: boolean
   [key: string]: any
 }
 
-export const resolveUIValueArg = <T>(arg: UIValueArg<T>, currentValue?: T) => {
+export const resolveValueArg = <T>(arg: InputValueArg<T>, currentValue?: T) => {
   if (Array.isArray(arg)) {
     const [initialValue, value] = arg
     return { value, initialValue }

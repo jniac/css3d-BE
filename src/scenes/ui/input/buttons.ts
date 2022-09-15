@@ -1,13 +1,13 @@
-import { divProps, frame, createDiv, getUiDiv } from '../dom'
-import { resolveUIValueArg, UIResult, UIValueArg } from '../types'
+import { divProps, frame, createDiv, getUiRootDiv, getUiInputDiv } from '../dom'
+import { resolveValueArg, InputResult, InputValueArg, InputNameArg } from '../types'
 import { toArray } from '../utils'
 
 export const create = <T extends readonly unknown[]>(
   name: string, 
-  valueArg: UIValueArg<T[number]>, 
+  valueArg: InputValueArg<T[number]>, 
   options: Readonly<T>,
-): UIResult<T[number]> => {
-  const { value, initialValue } = resolveUIValueArg(valueArg)
+): InputResult<T[number]> => {
+  const { value, initialValue } = resolveValueArg(valueArg)
   const div = createDiv(name, 'buttons', `
     <div class="label">
       <div class="name">${name}</div>
@@ -51,16 +51,16 @@ export const create = <T extends readonly unknown[]>(
 }
 
 export const buttons = <T extends readonly unknown[]>(
-  name: string, 
-  valueArg: UIValueArg<T[number]>, 
+  name: InputNameArg, 
+  valueArg: InputValueArg<T[number]>, 
   options: Readonly<T>,
-): UIResult<T[number]> => {
-  const div = getUiDiv().querySelector(`#${name}`) as HTMLDivElement
+): InputResult<T[number]> => {
+  const div = getUiInputDiv(name)
   if (div) {
     const buttons = toArray(div.querySelectorAll('button'))
     const index = buttons.findIndex(button => button.classList.contains('selected'))
     const hasChanged = Number.parseInt(div.dataset.frame) === frame - 1
-    const value = hasChanged ? options[index] : resolveUIValueArg(valueArg, options[index]).value
+    const value = hasChanged ? options[index] : resolveValueArg(valueArg, options[index]).value
     divProps.get(div).updateValue(options.indexOf(value))
     return { buttons, value, hasChanged }
   }
