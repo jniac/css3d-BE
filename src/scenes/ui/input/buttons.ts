@@ -1,4 +1,4 @@
-import { divProps, frame, createDiv, uiElement } from '../dom'
+import { divProps, frame, createDiv, getUiDiv } from '../dom'
 import { resolveUIValueArg, UIResult, UIValueArg } from '../types'
 import { toArray } from '../utils'
 
@@ -55,7 +55,7 @@ export const buttons = <T extends readonly unknown[]>(
   valueArg: UIValueArg<T[number]>, 
   options: Readonly<T>,
 ): UIResult<T[number]> => {
-  const div = uiElement.querySelector(`#${name}`) as HTMLDivElement
+  const div = getUiDiv().querySelector(`#${name}`) as HTMLDivElement
   if (div) {
     const buttons = toArray(div.querySelectorAll('button'))
     const index = buttons.findIndex(button => button.classList.contains('selected'))

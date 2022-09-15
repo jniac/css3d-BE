@@ -1,4 +1,3 @@
-export const uiElement = document.querySelector('#ui')
 
 type DivProps = {
   updateValue: (value: any) => void,
@@ -9,12 +8,23 @@ export const divProps = new Map<HTMLDivElement, DivProps>()
 
 let currentGroup: HTMLDivElement | null = null
 
+const createUiDiv = () => {
+  const div = document.createElement('div')
+  div.id = 'ui'
+  document.body.append(div)
+  return div
+}
+
+export const getUiDiv = () => {
+  return (document.querySelector('div#ui') as HTMLDivElement) ?? createUiDiv()
+}
+
 export const createDiv = (id: string, className: string, innerHTML: string) => {
   const div = document.createElement('div')
   div.id = id
   div.className = `input ${className}`
   div.innerHTML = innerHTML
-  const parent = currentGroup ?? uiElement
+  const parent = currentGroup ?? getUiDiv()
   parent.append(div)
   divProps.set(div, { updateValue: noop })
   return div
@@ -29,7 +39,7 @@ export const createGroup = (id: string) => {
     <div class="contents">
     </div>
   `
-  const parent = currentGroup ?? uiElement
+  const parent = currentGroup ?? getUiDiv()
   parent.append(div)
   return div
 }
@@ -38,7 +48,7 @@ export const createGroup = (id: string) => {
 
 export const group = (id: string, callback: () => void) => {
   const previousGroup = currentGroup
-  currentGroup = (uiElement.querySelector(`div#${id}.group .contents`) as HTMLDivElement) ?? (createGroup(id).querySelector('.contents') as HTMLDivElement)
+  currentGroup = (getUiDiv().querySelector(`div#${id}.group .contents`) as HTMLDivElement) ?? (createGroup(id).querySelector('.contents') as HTMLDivElement)
   callback()
   currentGroup = previousGroup
 }

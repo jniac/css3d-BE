@@ -1,4 +1,3 @@
-import { uiElement } from './dom'
 
 export const toArray = <T>(value: ArrayLike<T>) => {
   const array = new Array(value.length) as T[]

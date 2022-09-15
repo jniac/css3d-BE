@@ -1,4 +1,4 @@
-import { divProps, frame, createDiv, uiElement } from '../dom'
+import { divProps, frame, createDiv, getUiDiv } from '../dom'
 import { resolveUIValueArg, UIResult, UIValueArg } from '../types'
 
 type Step = number | 'any'
@@ -69,7 +69,7 @@ export const range = (
   valueArg: UIValueArg<number>, 
   props: PropsArg = {},
  ): UIResult<number> => {
-  const div = uiElement.querySelector(`#${name}`) as HTMLDivElement
+  const div = getUiDiv().querySelector(`#${name}`) as HTMLDivElement
   if (div) {
     const input = div.querySelector('input')
     const inputValue = Number.parseFloat(input.value)
