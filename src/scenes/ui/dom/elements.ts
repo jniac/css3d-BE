@@ -25,6 +25,16 @@ export const getUiInputDiv = (name: InputNameArg) => {
   return getUiRootDiv().querySelector(`#${id}`) as HTMLDivElement
 }
 
+export const setStyle = ({
+  root,
+}: Partial<{
+  root: Partial<CSSStyleDeclaration>
+}> = {}) => {
+  if (root) {
+    Object.assign(getUiRootDiv().style, root)
+  }
+}
+
 export const createDiv = (id: string, className: string, innerHTML: string) => {
   const div = document.createElement('div')
   div.id = id

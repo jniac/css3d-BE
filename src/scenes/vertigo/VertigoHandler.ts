@@ -63,7 +63,11 @@ export default class VertigoHandler extends UniversalCamera {
 
     public onUpdate() {
 
-        ui.group('camera', () => {
+        ui.setStyle({
+            root: {
+                justifyContent: 'flex-end',
+            },
+        }).group('camera', () => {
             this.perspective = ui.range("perspective", this.perspective, [0, 2]).value;
             this.height = ui.range("height", this.height, [1, 20]).value;
             this.rotation.x = ui.range("rx", this.rotation.x, [-Math.PI / 2, Math.PI / 2]).value;
