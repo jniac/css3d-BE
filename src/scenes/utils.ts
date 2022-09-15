@@ -8,7 +8,7 @@ import { Matrix, Vector3, Vector4 } from '@babylonjs/core'
   g | h | i | z
   0 | 0 | 0 | 1
 
-  row-major                 babylon
+  row-major                 column-major (babylon, three internally)
   00 | 01 | 02 | 03    -    00 | 04 | 08 | 12
   04 | 05 | 06 | 07    -    01 | 05 | 09 | 13
   08 | 09 | 10 | 11    -    02 | 06 | 10 | 14
@@ -42,7 +42,7 @@ export const scaleTranslation = (numbers: number[], scale: number, scaleY = scal
   return numbers;
 };
 
-export const incrementTranslation = (numbers: number[], x: number, y: number, z: number) => {
+export const addTranslation = (numbers: number[], x: number, y: number, z: number) => {
   numbers[4 * 3 + 0] += x;
   numbers[4 * 3 + 1] += y;
   numbers[4 * 3 + 2] += z;
@@ -89,10 +89,10 @@ export const scaleMatrix = (numbers: number[], scale: number) => {
 }
 
 export const scaleRow4 = (numbers: number[], rowIndex: number, scale: number) => {
-  numbers[rowIndex + 0 * 4] *= scale;
-  numbers[rowIndex + 1 * 4] *= scale;
-  numbers[rowIndex + 2 * 4] *= scale;
-  numbers[rowIndex + 3 * 4] *= scale;
+  numbers[rowIndex + 0 * 4] *= scale; //  0,  1
+  numbers[rowIndex + 1 * 4] *= scale; //  4,  5
+  numbers[rowIndex + 2 * 4] *= scale; //  8,  9
+  numbers[rowIndex + 3 * 4] *= scale; // 12, 13
   return numbers;
 }
 
@@ -122,12 +122,14 @@ export const round = (x: number, base: number) => {
   return Math.round(x / base) * base;
 }
 
+/*
+  column-major                right - up - forward - translation vectors
+  00 │ 04 │ 08 │ 12    <->    rx │ ux │ fx │ tx
+  01 │ 05 │ 09 │ 13    <->    ry │ uy │ fy │ ty
+  02 │ 06 │ 10 │ 14    <->    rz │ uz │ fz │ tz
+  03 │ 07 │ 11 │ 15    <->     0 │  0 │  0 │  1
+*/
 export const matrixToString = (m: ArrayLike<number>) => {
-  // 00 | 04 | 08 | 12
-  // 01 | 05 | 09 | 13
-  // 02 | 06 | 10 | 14
-  // 03 | 07 | 11 | 15
-  const f1 = (n: number) => n.toFixed(2)
   const getCol = (x: number, y: number, z: number, w: number, decimals = 3) => {
     const tr = [x, y, z, w].map(n => n.toFixed(decimals))
     const tr_max = tr.reduce((max, x) => Math.max(x.length, max), 0)
@@ -163,7 +165,7 @@ export const utils = {
   swapMatrixOrder,
   getTranslation,
   scaleTranslation,
-  incrementTranslation,
+  addTranslation,
 
   getRowVec4,
   getRowVec3,

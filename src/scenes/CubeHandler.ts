@@ -59,7 +59,6 @@ export default class CubeHandler extends Mesh {
     }
 
     public onUpdate(): void {
-        // CameraHandler.cameraPositionUpdate(this.camera);
         const animationType = this.animation()
 
         if (animationType === 'suspended') {
@@ -74,8 +73,6 @@ export default class CubeHandler extends Mesh {
         this.projectPlane('#plane-2', { x: offset, ry: Math.PI / 2 })
     }
 
-    time = 0
-
     sphereUpdate() {
         const [sphereX, sphereY, sphereZ] = this.spheres
         const mx = Matrix.Compose(new Vector3().setAll(.2), new Vector3(0, 0, 0).toQuaternion(), new Vector3(.5, 0, 0))
@@ -86,6 +83,8 @@ export default class CubeHandler extends Mesh {
         my.multiplyToRef(this.getWorldMatrix(), sphereY.getWorldMatrix())
         mz.multiplyToRef(this.getWorldMatrix(), sphereZ.getWorldMatrix())
     }
+
+    time = 0
 
     animation () {
         const centerRotationDamping = (x: number, y: number, z: number) => {
@@ -147,10 +146,7 @@ export default class CubeHandler extends Mesh {
     } = {}): void {
         const canvas = document.querySelector('canvas#renderCanvas') as HTMLCanvasElement
         const plane = document.querySelector(`#hud ${id}`) as HTMLDivElement
-        const cameraHeight2 = this.camera.mode === Camera.PERSPECTIVE_CAMERA
-            ? 1 / Math.tan(this.camera.fov / 2)
-            : 1 / this.camera._projectionMatrix.m[5]
-
+        
         const uiScale = ui.range('scale', { initialValue: 1 }, { min: 0, max: 3 }).value
         const scale = new Vector3().setAll(uiScale)
         const rotation = new Vector3(rx, ry, rz).toQuaternion()
@@ -160,12 +156,15 @@ export default class CubeHandler extends Mesh {
         const targetMatrix = Matrix.Compose(scale, rotation, position).multiply(this.getWorldMatrix())
         const cameraMatrix = this.camera.getWorldMatrix().clone().invert()
         const matrix = targetMatrix.multiply(cameraMatrix)
-
+        
         const numbers = utils.cloneArray(matrix.m)
-        utils.incrementTranslation(numbers, 0, 0, -5)
+        utils.addTranslation(numbers, 0, 0, -5)
+        const cameraHeight2 = this.camera.mode === Camera.PERSPECTIVE_CAMERA
+            ? 1 / Math.tan(this.camera.fov / 2)
+            : this.camera._projectionMatrix.m[5]
         const pixelScalar = this.camera.mode === Camera.PERSPECTIVE_CAMERA 
             ? cameraHeight2 * canvas.offsetHeight / 2 / 5
-            : canvas.offsetHeight / 2 / cameraHeight2
+            : cameraHeight2 * canvas.offsetHeight / 2
         utils.scaleMatrix(numbers, pixelScalar / 200)
         utils.scaleTranslation(numbers, pixelScalar)
         utils.scaleRow4(numbers, 1, -1)

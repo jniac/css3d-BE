@@ -79,6 +79,5 @@ export const computeVertigoCamera = (
         camera._projectionMatrix.copyFrom(matrix)
         camera._position.copyFrom(vector)
         camera.position.copyFrom(vector)
-
     }
 }
