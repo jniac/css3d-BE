@@ -1,5 +1,5 @@
-import { divProps, frame, createDiv, getUiRootDiv, getUiInputDiv } from '../dom'
-import { resolveValueArg, InputResult, InputValueArg } from '../types'
+import { divProps, frame, createDiv, getUiInputDiv } from '../dom'
+import { resolveValueArg, InputResult, InputValueArg, resolveNameArg, InputNameArg } from '../types'
 
 type Step = number | 'any'
 
@@ -27,16 +27,17 @@ const resolvePropsArg = (arg: PropsArg = {}): Required<Props> => {
 }
 
 const create = (
-  name: string, 
+  name: InputNameArg, 
   valueArg: InputValueArg<number>, 
   props?: PropsArg,
 ): InputResult<number> => {
   const { value, initialValue } = resolveValueArg(valueArg)
   const { min, max, step, decimals } = resolvePropsArg(props)
   const format = (n: number) => n.toFixed(decimals)
-  const div = createDiv(name, 'range', /* html */`
+  const { id, displayName } = resolveNameArg(name)
+  const div = createDiv(id, 'range', /* html */`
     <div class="label">
-      <div class="name">${name}</div>
+      <div class="name">${displayName}</div>
       <div class="value">(${format(value)})</div>
     </div>
     <input type="range" min="${min}" max="${max}" step="${step}" value="${value}"></input>

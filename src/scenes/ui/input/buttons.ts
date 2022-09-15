@@ -1,16 +1,17 @@
-import { divProps, frame, createDiv, getUiRootDiv, getUiInputDiv } from '../dom'
-import { resolveValueArg, InputResult, InputValueArg, InputNameArg } from '../types'
+import { divProps, frame, createDiv, getUiInputDiv } from '../dom'
+import { resolveValueArg, InputResult, InputValueArg, InputNameArg, resolveNameArg } from '../types'
 import { toArray } from '../utils'
 
 export const create = <T extends readonly unknown[]>(
-  name: string, 
+  name: InputNameArg, 
   valueArg: InputValueArg<T[number]>, 
   options: Readonly<T>,
 ): InputResult<T[number]> => {
   const { value, initialValue } = resolveValueArg(valueArg)
-  const div = createDiv(name, 'buttons', `
+  const { id, displayName } = resolveNameArg(name)
+  const div = createDiv(id, 'buttons', /* html */`
     <div class="label">
-      <div class="name">${name}</div>
+      <div class="name">${displayName}</div>
     </div>
     <div class="buttons">
       ${options.map(opt => `<button>${opt}</button>`).join('\n')}
