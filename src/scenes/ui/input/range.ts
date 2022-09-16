@@ -1,5 +1,5 @@
 import { divProps, frame, createDiv, getUiInputDiv } from '../dom'
-import { resolveValueArg, InputResult, InputValueArg, resolveNameArg, InputNameArg } from '../types'
+import { resolveValueArg, InputResult, InputValueArg, resolveNameArg, NameArg } from '../types'
 
 type Step = number | 'any'
 
@@ -27,7 +27,7 @@ const resolvePropsArg = (arg: PropsArg = {}): Required<Props> => {
 }
 
 const create = (
-  name: InputNameArg, 
+  name: NameArg, 
   valueArg: InputValueArg<number>, 
   props?: PropsArg,
 ): InputResult<number> => {

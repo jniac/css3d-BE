@@ -1,9 +1,9 @@
 import { divProps, frame, createDiv, getUiInputDiv } from '../dom'
-import { resolveValueArg, InputResult, InputValueArg, InputNameArg, resolveNameArg } from '../types'
+import { resolveValueArg, InputResult, InputValueArg, NameArg, resolveNameArg } from '../types'
 import { toArray } from '../utils'
 
 export const create = <T extends readonly unknown[]>(
-  name: InputNameArg, 
+  name: NameArg, 
   valueArg: InputValueArg<T[number]>, 
   options: Readonly<T>,
 ): InputResult<T[number]> => {
@@ -52,7 +52,7 @@ export const create = <T extends readonly unknown[]>(
 }
 
 export const buttons = <T extends readonly unknown[]>(
-  name: InputNameArg, 
+  name: NameArg, 
   valueArg: InputValueArg<T[number]>, 
   options: Readonly<T>,
 ): InputResult<T[number]> => {

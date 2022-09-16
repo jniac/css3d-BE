@@ -76,8 +76,13 @@ export default class VertigoHandler extends UniversalCamera {
             if (ui.button('test').hasChanged) {
                 alert('ok');
             }
-            if (ui.button('switch', true).value) {
-                
+        })
+
+        ui.group('camera', () => {
+            if (ui.button('title', true).value) {
+                document.title = 'ON!!!'
+            } else {
+                document.title = 'off...'
             }
         })
 

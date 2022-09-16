@@ -47,7 +47,6 @@ style.innerHTML =
 
   #ui div.input:hover {
     font-weight: 500;
-    font-style: italic;
     color: #06f;
   }
 

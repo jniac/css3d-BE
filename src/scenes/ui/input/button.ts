@@ -1,10 +1,10 @@
 import { createDiv, frame, getUiInputDiv } from '../dom'
-import { InputNameArg, InputResult, InputValueArg, resolveNameArg, resolveValueArg } from '../types'
+import { NameArg, InputResult, InputValueArg, resolveNameArg, resolveValueArg } from '../types'
 
 type ButtonType = 'classic' | 'switch'
 
 const create = (
-  name: InputNameArg,
+  name: NameArg,
   switchOn: InputValueArg<boolean> = false,
   type: ButtonType = 'classic',
 ): InputResult<boolean> => {
@@ -34,7 +34,7 @@ const create = (
 }
 
 export const button = (
-  name: InputNameArg,
+  name: NameArg,
   switchOn?: InputValueArg<boolean>,
   type: ButtonType = switchOn === undefined ? 'classic' : 'switch',
 ): InputResult<boolean> => {

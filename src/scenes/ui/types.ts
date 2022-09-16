@@ -1,8 +1,8 @@
 
-export type InputNames = { displayName: string, id: string }
-export type InputNameArg = string | InputNames
+export type Identifier = { displayName: string, id: string }
+export type NameArg = string | Identifier
 
-export const resolveNameArg = (arg: InputNameArg): InputNames => {
+export const resolveNameArg = (arg: NameArg): Identifier => {
   let displayName = '', id = ''
   if (typeof arg === 'string') {
     displayName = arg
@@ -27,7 +27,7 @@ export type InputResult<T> = {
   [key: string]: any
 }
 
-export const resolveValueArg = <T>(arg: InputValueArg<T>, currentValue?: T) => {
+export const resolveValueArg = <T>(arg: InputValueArg<T>, currentValue?: T): { value: T, initialValue: T } => {
   if (Array.isArray(arg)) {
     const [initialValue, value] = arg
     return { value, initialValue }
