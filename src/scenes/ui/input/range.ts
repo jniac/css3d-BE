@@ -73,9 +73,9 @@ export const range = (
   const div = getUiInputDiv(name)
   if (div) {
     const input = div.querySelector('input')
-    const inputValue = Number.parseFloat(input.value)
     const hasChanged = Number.parseInt(div.dataset.frame) === frame - 1
-    const value = hasChanged ? inputValue : resolveValueArg(valueArg, inputValue).value
+    const currentValue = Number.parseFloat(input.value)
+    const value = hasChanged ? currentValue : resolveValueArg(valueArg, currentValue).value
     divProps.get(div).updateValue(value)
     return { input, value, hasChanged }
   }

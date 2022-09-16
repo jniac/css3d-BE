@@ -17,11 +17,15 @@ const createUiDiv = () => {
   return div
 }
 
-export const getUiWrapperDiv = () => {
+export const getUiRootDiv = () => {
   return (
-    document.querySelector(`#ui > .wrapper`) 
-    ?? createUiDiv().querySelector(`.wrapper`)
+    document.querySelector(`#ui`) 
+    ?? createUiDiv()
   ) as HTMLDivElement
+}
+
+export const getUiWrapperDiv = () => {
+  return getUiRootDiv().querySelector(`.wrapper`) as HTMLDivElement
 }
 
 export const getUiInputDiv = (name: NameArg) => {
@@ -35,8 +39,7 @@ export const setStyle = ({
   root: Partial<CSSStyleDeclaration>
 }> = {}) => {
   if (root) {
-    const rootDiv = document.querySelector(`#ui`) as HTMLDivElement
-    Object.assign(rootDiv.style, root)
+    Object.assign(getUiRootDiv().style, root)
   }
 }
 

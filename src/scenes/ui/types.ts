@@ -11,7 +11,7 @@ export const resolveNameArg = (arg: NameArg): Identifier => {
     displayName = arg.displayName
     id = arg.id    
   }
-  id = id.replace(/[\.\s]/g, '_')
+  id = id.replace(/\W/g, '_')
   return { displayName, id }
 }
 

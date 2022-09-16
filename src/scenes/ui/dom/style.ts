@@ -2,6 +2,11 @@ const style = document.createElement('style')
 
 style.innerHTML =
     /* css */ `
+  #ui, #ui * {
+    position: relative;
+    box-sizing: border-box;
+  }
+
   #ui {
     position: fixed;
     top: 0;
@@ -34,6 +39,10 @@ style.innerHTML =
     user-select: none;
   }
 
+  #ui .group + .group {
+    border-top: none;
+  }
+
   #ui .group::after {
     content: '';
     position: absolute;
@@ -56,7 +65,7 @@ style.innerHTML =
   }
 
   #ui .group.collapsed::after {
-    transform: translate(-8px, 9px) rotate(-45deg);
+    transform: translate(-8px, 10px) rotate(-45deg);
   }
 
   #ui .group.collapsed .contents {
@@ -103,16 +112,8 @@ style.innerHTML =
     font-size: .66em;
   }
 
-  #ui div.input.button {
-
-    /* Because of conflicts with some bad-css somewhere. */
-    border-radius: 0;
-    width: unset;
-    height: unset;
-  }
-
   #ui div.input.button.switch.switch-on {
-    font-weight: 900;
+    font-weight: 600;
     font-style: italic;
   }
 
@@ -142,6 +143,25 @@ style.innerHTML =
     display: flex;
     flex-wrap: wrap;
   }
+
+  /* 
+    BAD-CSS-CONFLICT ->
+    Because of conflicts with some bad-css somewhere. 
+  */
+    #ui div.input.button {
+    border-radius: 0;
+    width: unset;
+    height: unset;
+    top: unset;
+    left: unset;
+  }
+  
+  #ui div.input.button:hover {
+    background: unset;
+  }
+  /*
+    BAD-CSS-CONFLICT <-
+  */
 `
 
 document.head.append(style)

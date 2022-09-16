@@ -1,4 +1,4 @@
-import { createDiv, frame, getUiInputDiv } from '../dom'
+import { createDiv, divProps, frame, getUiInputDiv } from '../dom'
 import { NameArg, InputResult, InputValueArg, resolveNameArg, resolveValueArg } from '../types'
 
 type ButtonType = 'classic' | 'switch'
@@ -14,36 +14,46 @@ const create = (
     <button>${displayName}</button>
   `)
   const button = div.querySelector('button')
-  const updateValue = (value: boolean, { triggerChange = false } = {}) => {
-    div.dataset.switchState = value ? 'on' : 'off'
-    div.classList.toggle('switch-on', value)
-    div.classList.toggle('switch-off', !value)
-    if (type === 'switch') {
-      button.innerHTML = `${displayName} (${value ? 'on' : 'off'})`
-    }
-    if (triggerChange) {
-      div.dataset.frame = frame.toString()
+  const updateValue = (newValue: boolean, { forceUpdate = false, triggerChange = false } = {}) => {
+    if (value !== newValue || forceUpdate) {
+      value = newValue
+      div.dataset.switchState = newValue ? 'on' : 'off'
+      div.classList.toggle('switch-on', newValue)
+      div.classList.toggle('switch-off', !newValue)
+      if (type === 'switch') {
+        button.innerHTML = `${displayName} (${newValue ? 'on' : 'off'})`
+      }
+      if (triggerChange) {
+        div.dataset.frame = frame.toString()
+      }
     }
   }
   button.onclick = () => {
     const currentValue = div.dataset.switchState === 'on'
     updateValue(!currentValue, { triggerChange: true })
   }
-  updateValue(value)
+  updateValue(value, { forceUpdate: true })
+  divProps.get(div).updateValue = updateValue
+  console.log({ value, id })
   return { value, hasChanged: false, button }
 }
 
 export const button = (
   name: NameArg,
-  switchOn?: InputValueArg<boolean>,
-  type: ButtonType = switchOn === undefined ? 'classic' : 'switch',
+  valueArg?: InputValueArg<boolean>,
+  type: ButtonType = valueArg === undefined ? 'classic' : 'switch',
 ): InputResult<boolean> => {
   const div = getUiInputDiv(name)
   if (div) {
     const button = div.querySelector('button')
-    const value = div.dataset.switchState === 'on'
     const hasChanged = Number.parseInt(div.dataset.frame) === frame - 1
+    const currentValue = div.dataset.switchState === 'on'
+    const value = hasChanged ? currentValue : resolveValueArg(valueArg, currentValue).value
+    divProps.get(div).updateValue(value)
+    if (/scale/.test(name as string)) {
+      // console.log(name, value)
+    }
     return { value, hasChanged, button }
   }
-  return create(name, switchOn, type)
+  return create(name, valueArg, type)
 }
