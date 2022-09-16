@@ -34,7 +34,6 @@ const create = (
   }
   updateValue(value, { forceUpdate: true })
   divProps.get(div).updateValue = updateValue
-  console.log({ value, id })
   return { value, hasChanged: false, button }
 }
 
@@ -50,9 +49,6 @@ export const button = (
     const currentValue = div.dataset.switchState === 'on'
     const value = hasChanged ? currentValue : resolveValueArg(valueArg, currentValue).value
     divProps.get(div).updateValue(value)
-    if (/scale/.test(name as string)) {
-      // console.log(name, value)
-    }
     return { value, hasChanged, button }
   }
   return create(name, valueArg, type)
