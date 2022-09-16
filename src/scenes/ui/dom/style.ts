@@ -3,8 +3,6 @@ const style = document.createElement('style')
 style.innerHTML =
     /* css */ `
   #ui {
-    --backdrop: blur(16px) brightness(1.15);
-
     position: fixed;
     top: 0;
     left: 0;
@@ -13,8 +11,17 @@ style.innerHTML =
     pointer-events: none;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     font-size: 14px;
     padding: 4px;
+  }
+
+  #ui > .wrapper {
+    backdrop-filter: blur(16px) brightness(1.15);    
+  }
+
+  #ui > * {
+    pointer-events: all;
   }
 
   #ui .group {
@@ -24,15 +31,36 @@ style.innerHTML =
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    backdrop-filter: var(--backdrop);
+    user-select: none;
+  }
+
+  #ui .group::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    top: 0;
+    right: 0;
+    border-left: solid 1px black;
+    border-bottom: solid 1px black;
+    transform: translate(-5px, 10px) rotate(45deg);
   }
 
   #ui .group > .name {
     text-decoration: underline;
+    cursor: pointer;
   }
 
   #ui .group .contents {
     padding-left: 16px;
+  }
+
+  #ui .group.collapsed::after {
+    transform: translate(-8px, 9px) rotate(-45deg);
+  }
+
+  #ui .group.collapsed .contents {
+    display: none;
   }
 
   #ui div.input {
@@ -40,9 +68,7 @@ style.innerHTML =
     display: flex;
     flex-direction: row;
     align-items: center;
-    pointer-events: all;
     padding: 2px;
-    backdrop-filter: var(--backdrop);
   }
 
   #ui div.input:hover {
