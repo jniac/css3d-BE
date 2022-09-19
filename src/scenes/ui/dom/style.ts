@@ -22,7 +22,8 @@ style.innerHTML =
   }
 
   #ui > .wrapper {
-    backdrop-filter: blur(16px) brightness(1.15);    
+    backdrop-filter: blur(16px) brightness(1.15);
+    -webkit-backdrop-filter: blur(16px) brightness(1.15);
   }
 
   #ui > * {
